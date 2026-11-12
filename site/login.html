@@ -1,0 +1,28 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex"><title>Sign in</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<style>body{background:#12281E;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}.box{width:100%;max-width:420px}.err{color:#A32D1F;font-weight:700}</style></head>
+<body><form class="card stack box" id="f" autocomplete="off">
+<span class="eyebrow">Private preview</span><h1 style="font-size:36px">Sign in to view this site</h1>
+<div class="field"><label>Username<input id="u" type="text" autocapitalize="none" required></label></div>
+<div class="field"><label>Password<input id="p" type="password" required></label></div>
+<p class="err" id="e" role="alert" hidden>That username or password is not right.</p>
+<button class="btn green sm" type="submit">Sign in</button></form>
+<script>
+(function () {
+  var HASH = 'ee9cae001dd4de781319d56199eabae6852a49b87d0632a5960a035f883a9036';
+  function hex(buf) { return Array.prototype.map.call(new Uint8Array(buf), function (b) { return ('0' + b.toString(16)).slice(-2); }).join(''); }
+  document.getElementById('f').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var v = document.getElementById('u').value.trim().toLowerCase() + ':' + document.getElementById('p').value;
+    crypto.subtle.digest('SHA-256', new TextEncoder().encode(v)).then(function (d) {
+      if (hex(d) === HASH) {
+        var next = 'index.html';
+        try { sessionStorage.setItem('site-access', 'yes'); next = sessionStorage.getItem('site-next') || next; } catch (e) {}
+        location.replace(/^[a-z]+\.html$/.test(next) && next !== 'login.html' ? next : 'index.html');
+      } else { document.getElementById('e').hidden = false; }
+    });
+  });
+})();
+</script></body></html>
